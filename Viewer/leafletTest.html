@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Leaflet test</title>
+	<link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.css" />
+	<script src="http://cdn.leafletjs.com/leaflet-0.7.3/leaflet.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/proj4js/2.3.6/proj4.js"></script>
+	<script src="https://cdn.rawgit.com/kartena/Proj4Leaflet/master/src/proj4leaflet.js"></script>
+	<style>
+		body {
+			padding: 0;
+			margin: 0;
+		}
+		html, body, #map {
+			height: 100%;
+			width: 100%;
+		}
+	</style>
+</head>
+<body>
+
+	<div id="map"></div>
+
+	<script>
+	// var extent = {
+	// 	"left": 13152.470000,
+	// 	"right": 290261.747798,
+	// 	"top": 1593351.430600,
+	// 	"bottom": 1349078.763855
+	// }
+
+	var alaskaAlbers = new L.Proj.CRS('ESRI:102006', '+proj=aea +lat_1=55 +lat_2=65 +lat_0=50 +lon_0=-154 +x_0=0 +y_0=0 +ellps=GRS80 +datum=NAD83 +units=m +no_defs',
+									  {
+									  	resolutions: [500]
+									  });
+	var map = L.map('map', {
+			crs: alaskaAlbers,
+			continuousWorld: false,
+			maxBounds: L.latLngBounds([
+				[13152.470000, 1349078.763855],
+				[1593351.430600, 290261.747798]
+				])
+		})
+		.setView([151355, 1457839])
+		;
+
+	var overlay = L.imageOverlay("http://localhost:8000/hillshade.png", [[13152.470000, 1349078.763855], [1593351.430600, 290261.747798]]);
+
+	overlay.addTo(map);
+
+	</script>
+</body>
+</html>

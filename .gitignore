@@ -1,0 +1,10 @@
+Thumbs.db
+.DS_Store
+*.swp
+*
+!.gitignore
+!.gitattributes
+!Scripts/
+!Scripts/*
+!Viewer/
+!Viewer/*

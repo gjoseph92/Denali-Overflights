@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Denali Overflight Cost-Distance Viewer</title>
+	<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.14/angular.min.js"></script>
+	<script src="https://cdn.rawgit.com/angular-dragdrop/angular-dragdrop/master/draganddrop.js"></script>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600' rel='stylesheet' type='text/css'>
+	<script>
+		viewer = angular.module("LeastCostViewer", ["ang-drag-drop"])
+
+		.controller("main", function($scope, $http) {
+			var layers = ['agl_resis','bcmp_resis','bestp_resis','buffer_resis','camp_resis','hiker_resis','jets_resis','l50_resis','nfi_resis','riv_resis','roads_resis','sens_resis','straight_resis','travel_resis'];
+
+			$scope.layerInfo = {
+				'agl_resis': "distance from surface to elevation of 8000 feet",
+				'bcmp_resis': "BCMP zones - Low, Med, High, V. High",
+				'bestp_resis': "FACA group layer containing aviation best practices 2007 - 2012, esp. 'purple polygon'",
+				'buffer_resis': "park outline with 0.5 mile buffer",
+				'camp_resis': "campgrounds",
+				'hiker_resis': "Fix hiker density",
+				'jets_resis': "jet traffic rate, interpolated",
+				'l50_resis': "existing L50 dBA layer",
+				'nfi_resis': "interpolated NFI",
+				'riv_resis': "distance from major rivers",
+				'roads_resis': "road as a conductance (negative resistance)",
+				'sens_resis': "FACA group \"sound sensitive areas\"",
+				'straight_resis': "distance from straight lines from each airport to the Denali massif",
+				'travel_resis': "hiking distance/resistance"
+			};
+
+			var weightsAvailable = [8, 2, 0];
+
+			$scope.layerMasks = {
+				'agl_resis'      : 1,
+				'bcmp_resis'     : 1,
+				'bestp_resis'    : 1,
+				'buffer_resis'   : 0,
+				'camp_resis'     : 0,
+				'hiker_resis'    : 1,
+				'jets_resis'     : 0,
+				'l50_resis'      : 1,
+				'nfi_resis'      : 0,
+				'riv_resis'      : 0,
+				'roads_resis'    : 0,
+				'sens_resis'     : 0,
+				'straight_resis' : 1,
+				'travel_resis'   : 1
+			}
+
+			// var relpath = "../Results/Images/set_ext/";
+			$scope.imgpath = "http://localhost:8000/";
+
+			$scope.basemap = {
+				'hillshade': "layers/hillshade.png",
+				'airports': "layers/airports.png",
+				'dena': "layers/DENA_outline.png"
+			};
+
+			$scope.about = "Created by Gabe Joseph and the Denali National Park Physical Sciences Divsion.";
+
+			$scope.layers = layers;
+			$scope.weightsAvailable = weightsAvailable;
+			$scope.layersAvailable = layers.filter(function(layer) {
+				return $scope.layerMasks[layer]
+			});
+			$scope.weights = {};
+			$scope.scenarios = [];
+
+			$scope.i = {};		// encapsulate global interface params in an object so they can be modified inside scopes of ng-repeat, etc
+			$scope.i.soloCostRaster = null;
+			$scope.i.info = '';
+
+			var scenariosCounter = 0;
+
+			angular.forEach(layers, function(layer) {
+				$scope.weights[layer] = 0;
+			});
+
+			$scope.saveScenario = function() {
+				$scope.scenarios.push({
+					name: "Scenario " + ++scenariosCounter,
+					weights: angular.copy($scope.weights)
+				});
+			};
+			$scope.loadScenario = function(i) {
+				console.log("loading", $scope.scenarios[i]);
+				$scope.weights = angular.copy( $scope.scenarios[i].weights );
+				$scope.backupWeights = null;
+			};
+			$scope.deleteScenario = function(i) {
+				console.log("deleting", $scope.scenarios[i]);
+				$scope.scenarios.splice(i, 1);
+			};
+			$scope.previewScenario = function(i) {
+				console.log("previewing", $scope.scenarios[i]);
+				$scope.backupWeights = $scope.weights;
+				$scope.weights = $scope.scenarios[i].weights;
+			};
+			$scope.clearPreview = function() {
+				if ($scope.backupWeights) {
+					console.log("clear previewing");
+					$scope.weights = $scope.backupWeights;
+					$scope.backupWeights = null;
+				}
+			};
+
+			$scope.weightCode = function() {
+				var weights = layers.map(function(layer) {
+					return $scope.weights[layer]
+				});
+
+				return weights.join("");
+			};
+
+			$scope.soloWeightCode = function() {
+				var weights = layers.map(function() {return 0});
+				if ($scope.i.soloCostRaster) {
+					var i = layers.indexOf($scope.i.soloCostRaster);
+					weights[i] = weightsAvailable[0];
+				}
+				return weights.join("");
+			};
+
+		})
+
+		.directive('onEnter', function() {
+			// Evaluate the expression when the user presses enter on the element
+			return {
+				restrict: 'A',
+				replace: true,
+				link: function(scope, elem, attrs) {
+					elem.bind('keydown keypress', function(event) {
+						if (event.keyCode == 13) {
+							scope.$apply(attrs.onEnter);
+							event.preventDefault();
+						}
+					});
+				}
+			}
+		})
+		;
+
+	</script>
+	<style>
+		html, body {
+			/*background: radial-gradient(ellipse at center, #313338 0%,#282828 100%);*/
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			padding: 0;
+
+			display: flex;
+
+			font-family: 'Source Sans Pro', sans-serif;
+		}
+		h1,h2,h3,h4 {
+			color: #34495e;
+		}
+		h1 {
+			color: #42b983;
+		}
+
+		.sidebar {
+			flex: 1;
+			max-width: 250px;
+			/*height: 100%;*/
+			/*margin: 2px;*/
+			padding: 15px;
+			box-shadow: 0 0px 5px rgba(0,0,0,0.9);
+		}
+
+		#content {
+			flex: 1;
+			height: 100%;
+			position: relative;
+			z-index: -1;
+		}
+
+		#left {
+			/*border-right: 1px solid darkgray;*/
+		}
+		#right {
+			/*border-left: 1px solid darkgray;*/
+			max-width: 200px;
+			display: flex;
+			flex-direction: column;
+		}
+
+		#scenarios {
+			flex: 2;
+			overflow-x: hidden;
+			overflow-y: scroll;
+		}
+		#info {
+			flex: 1;
+			border-top: 1px solid #DADADA;
+		}
+
+		.map-center {
+			display: flex;
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			margin: 0;
+			justify-content: center;
+			align-items: center;
+			overflow: hidden;
+		}
+		.map {
+			flex: 1;
+			width: 100%;
+		}
+
+		.weightsbox {
+			min-height: 36px;
+
+			border: 1px solid #DADADA;
+			box-shadow: 0 1px 1px rgba(0,0,0,0.1);
+		}
+		.weightsbox.on-drag-hover {
+			background-color: #f9f9f9;
+		}
+
+		.weight {
+			margin: 3px;
+			padding: 3px 5px;
+			display: inline-block;
+			border: 1px solid #DADADA;
+			background-color: #f0f0f0;
+			border-radius: 3px;
+			-webkit-user-select: none;
+			cursor: pointer;
+			transition: border-color .1s;
+			transition: background-color .1s;
+			color: #1A1A1A;
+		}
+		.weight:hover {
+			border-color: darkgray;
+			background-color: #f9f9f9;
+		}
+		.pinbottom {
+			position: absolute;
+			bottom: 0;
+			margin: 10px 0;
+		}
+
+		.scenario {
+			margin: 0;
+			padding: 12px 10px;
+			border: none;
+			border-top: 1px solid #DADADA;
+			cursor: pointer;
+		}
+		.scenario .name {
+			cursor: text;
+		}
+		.scenario .delete {
+			float: right;
+			color: inherit;
+			transition: color .08s;
+		}
+		.scenario .delete:hover {
+			color: rgb(226, 129, 0);
+		}
+
+		.scenario:hover {
+			background-color: #f9f9f9;
+			font-weight: bold;
+		}
+
+	</style>
+</head>
+<body ng-app="LeastCostViewer" ng-controller="main">
+
+<div class="sidebar" id="left">
+	<h1>Resistance Weights</h1>
+	<div class="weighting" ng-repeat="weight in weightsAvailable">
+		<h2>Weight: {{weight}}</h2>
+		<div class="weightsbox"
+			 ui-on-drop="(weights[$data] = weight) + (i.soloCostRaster = null)"
+			 ng-mouseleave="i.info = ''"
+		>
+			<span class="weight"
+				  ng-repeat="layer in layersAvailable"
+				  ng-if="weights[layer] == weight"
+				  ui-draggable="true"
+				  drag="layer"
+				  ng-dblclick="(weights[layer] = (weights[layer] > 0 ? 0 : weightsAvailable[1])) + (i.soloCostRaster = null)"
+				  ng-mouseenter="(i.soloCostRaster = layer) + (i.info = layerInfo[layer])"
+				  ng-mouseleave="i.soloCostRaster = null"
+				  >{{layer}}</span>
+		</div>
+	</div>
+	<div class="pinbottom">
+		<div>
+			<input type="checkbox" id="showCost" ng-model="showCostRaster"> <label for="showCost">Show cost raster</label>
+		</div>
+	</div>
+</div>
+
+<div id="content">
+	<div class="map-center"><img class="map" ng-src="{{basemap.hillshade}}" alt="Whoops, there's no hillshade"/></div>
+	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + weightCode() + '.png'}}" ng-if="showCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
+	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + soloWeightCode() + '.png'}}" ng-if="showCostRaster && i.soloCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
+	<div class="map-center"><img class="map" id="map" ng-src="{{imgpath + 'lcp/' + weightCode() + '.png'}}" alt="Whoops, there's no map rendered for that combination of weights"/></div>
+	<!-- <img class="map" ng-src="{{basemap.airports}}" alt="Whoops, there's no airports"/> -->
+	<!-- <img class="map" ng-src="{{basemap.dena}}" alt="Whoops, there's no dena"/> -->
+</div>
+
+<div class="sidebar" id="right">
+	<div id="scenarios">
+		<h1>Scenarios</h1>
+		<div class="scenario">
+			<a href="" ng-click="saveScenario()">Save current scenario</a>
+		</div>
+		<div class="scenario"
+			 ng-repeat="scenario in scenarios"
+			 ng-click="loadScenario($index)"
+			 ng-mouseenter="previewScenario($index)"
+			 ng-mouseleave="clearPreview()"
+			 >
+			<span class="name" ng-show="!scenario.editing" ng-click="scenario.editing = true">{{scenario.name}}</span>
+			<input type="text" ng-model="scenario.name" class="name" ng-show="scenario.editing" on-enter="scenario.editing = false"/>
+			<span ng-click="deleteScenario($index)" class="delete">&#10006;</span>
+		</div>
+	</div>
+	<div id="info">
+		<p>{{i.info}}</p>
+		<div class="pinbottom">
+			<a href="" ng-mouseenter="i.info = about" ng-mouseleave="i.info = ''">About</a>
+		</div>
+	</div>
+</div>
+
+
+</body>
+</html>
