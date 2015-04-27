@@ -12,20 +12,62 @@
 			var layers = ['agl_resis','bcmp_resis','bestp_resis','buffer_resis','camp_resis','hiker_resis','jets_resis','l50_resis','nfi_resis','riv_resis','roads_resis','sens_resis','straight_resis','travel_resis'];
 
 			$scope.layerInfo = {
-				'agl_resis': "distance from surface to elevation of 8000 feet",
-				'bcmp_resis': "BCMP zones - Low, Med, High, V. High",
-				'bestp_resis': "FACA group layer containing aviation best practices 2007 - 2012, esp. 'purple polygon'",
-				'buffer_resis': "park outline with 0.5 mile buffer",
-				'camp_resis': "campgrounds",
-				'hiker_resis': "Fix hiker density",
-				'jets_resis': "jet traffic rate, interpolated",
-				'l50_resis': "existing L50 dBA layer",
-				'nfi_resis': "interpolated NFI",
-				'riv_resis': "distance from major rivers",
-				'roads_resis': "road as a conductance (negative resistance)",
-				'sens_resis': "FACA group \"sound sensitive areas\"",
-				'straight_resis': "distance from straight lines from each airport to the Denali massif",
-				'travel_resis': "hiking distance/resistance"
+				'agl_resis': {
+					title: "Distance from ground",
+					info: "Distance from ground surface to elevation of 8000 feet. Reduced AGL is one of the most pronounced factors in increasing overflight intensity, animal, and visitor irritation."
+				},
+				'bcmp_resis': {
+					title: "BCMP zones",
+					info: "Backcountry Management Plan zones - Low, Med, High, V. High"
+				},
+				'bestp_resis': {
+					title: "FACA best practices",
+					info: "FACA group layer containing aviation best practices 2007 - 2012, esp. 'purple polygon'."
+				},
+				'buffer_resis': {
+					title: "Avoid DENA overflight",
+					info: "Entirely avoid flying inside the boundaries of the park."
+				},
+				'camp_resis': {
+					title: "Campgrounds",
+					info: "Avoid flying near campgrounds to preserve quietude. Recognized by the FACA group as sound-sensitive areas, but not included on their map."
+				},
+				'hiker_resis': {
+					title: "Hiker density",
+					info: "Avoid flying over areas of high day-hiker and backpacker density."
+				},
+				'jets_resis': {
+					title: "Avoid low jet traffic",
+					info: "Preserve existing quietude by avoiding areas with low high-altitude jet traffic."
+				},
+				'l50_resis': {
+					title: "Ambient noise level",
+					info: "Prefer flying over naturally louder areas, like streams. Based on modeling of median sound pressure level across the entire state."
+				},
+				'nfi_resis': {
+					title: "Noise-free interval",
+					info: "Areas with the lowest 24-hour noise-free intervals should not be sacrificed."
+				},
+				'riv_resis': {
+					title: "Rivers",
+					info: "Prefer to fly nearer to rivers, as they mask human noise."
+				},
+				'roads_resis': {
+					title: "Road",
+					info: "Prefer flying over the road. This was an idea discussed and vetted by the FACA group."
+				},
+				'sens_resis': {
+					title: "Sound-sensitive areas",
+					info: "FACA group \"sound sensitive areas\""
+				},
+				'straight_resis': {
+					title: "Flight directness",
+					info: "Prefer straighter lines from each airport to the Denali massif"
+				},
+				'travel_resis': {
+					title: "Hiking distance",
+					info: "Perfer flying over areas that are easier to hike to. The desire for solitude is often correlated with the energy expended to find it."
+				}
 			};
 
 			var weightsAvailable = [8, 2, 0];
@@ -47,8 +89,7 @@
 				'travel_resis'   : 1
 			}
 
-			// var relpath = "../Results/Images/set_ext/";
-			$scope.imgpath = "http://localhost:8000/";
+			$scope.imgpath = window.location.host == "" ? "http://localhost:8000/" : "http://denali-overflights.s3-website-us-east-1.amazonaws.com/Results/Images/primary/";
 
 			$scope.basemap = {
 				'hillshade': "Viewer/layers/hillshade.png",
@@ -288,9 +329,9 @@
 				  ui-draggable="true"
 				  drag="layer"
 				  ng-dblclick="(weights[layer] = (weights[layer] > 0 ? 0 : weightsAvailable[1])) + (i.soloCostRaster = null)"
-				  ng-mouseenter="(i.soloCostRaster = layer) + (i.info = layerInfo[layer])"
+				  ng-mouseenter="(i.soloCostRaster = layer) + (i.info = layerInfo[layer].info)"
 				  ng-mouseleave="i.soloCostRaster = null"
-				  >{{layer}}</span>
+				  >{{layerInfo[layer].title}}</span>
 		</div>
 	</div>
 	<div class="pinbottom">
