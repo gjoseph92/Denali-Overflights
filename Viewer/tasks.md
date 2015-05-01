@@ -4,7 +4,7 @@ Features
 ========
 [x] Drag between weighting levels
     - Select multiple?
-[ ] Compare multiple weightings
+[x] Compare multiple weightings
     [ ] overlay
     - side-by-side
     - difference?

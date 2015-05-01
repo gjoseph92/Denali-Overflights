@@ -8,20 +8,20 @@ Exports each visible layer in the map file to PNG
 """
 
 if len(sys.argv) == 1:
-    outdir = paths.images
+    outdir = paths.joinNative(paths.images, "Layers")
 else:
     outdir = sys.argv[1]
 
-mapdoc = paths.joinNative(paths.projRoot, "dev.mxd")
+mapdoc = paths.joinNative(paths.projRoot, "templateNoCscape.mxd")
 print mapdoc
 mxd = arcpy.mapping.MapDocument(mapdoc)
 df = arcpy.mapping.ListDataFrames(mxd, "")[0]
-df.extent = arcpy.Describe(paths.studyArea).extent
+# df.extent = arcpy.Describe(paths.studyArea).extent
 
-aspect = (df.extent.XMax - df.extent.XMin) / float(df.extent.YMax - df.extent.YMin)
-outHeight = 1600
-outWidth = int(outHeight * aspect)
-print "Aspect: {} --> {} x {}".format(aspect, outWidth, outHeight)
+# aspect = ext.width / float(ext.height)
+# outHeight = 1600
+# outWidth = int(outHeight * aspect)
+# print "Aspect: {} --> {} x {}".format(aspect, outWidth, outHeight)
 
 # turn off layers
 print "Turning off layers..."
@@ -36,12 +36,15 @@ for lyr in layers:
     # mxd.save()
     dest = paths.joinNative(outdir, lyr.name + ".png")
     print "Exporting {} to {}".format(lyr.name, dest)
-    arcpy.mapping.ExportToPNG(mxd,
-                              dest,
-                              df,
-                              outWidth,
-                              outHeight,
-                              96, False, "24-BIT_TRUE_COLOR", "255, 255, 255", "255, 255, 255", False )
+##    arcpy.mapping.ExportToPNG(mxd,
+##                              dest,
+##                              df,
+##                              outWidth,
+##                              outHeight,
+##                              96, False, "24-BIT_TRUE_COLOR", "255, 255, 255", "255, 255, 255", False )
+    arcpy.mapping.ExportToPNG(mxd, dest, "PAGE_LAYOUT",
+                              resolution= 400,
+                              background_color= "255, 255, 255", transparent_color= "255, 255, 255")
 
     lyr.visible = False
     # mxd.save()
