@@ -347,10 +347,12 @@
 	<div class="map-center"><img class="map" ng-src="{{basemap.hillshade}}" alt="Whoops, there's no hillshade"/></div>
 	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + weightCode() + '.png'}}" ng-if="showCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
 	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + soloWeightCode() + '.png'}}" ng-if="showCostRaster && i.soloCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
+
+	<div class="map-center"><img class="map" ng-src="{{basemap.roads}}" alt="Whoops, there's no roads"/></div>
+	
 	<div class="map-center"><img class="map" id="map" ng-src="{{imgpath + 'LCP/' + weightCode() + '.png'}}" alt="Whoops, there's no map rendered for that combination of weights"/></div>
 	<!-- <div class="map-center"><img class="map" id="map" ng-src="{{basemap.lcp}}" alt="Whoops, there's no map rendered for that combination of weights"/></div> -->
 	
-	<div class="map-center"><img class="map" ng-src="{{basemap.roads}}" alt="Whoops, there's no roads"/></div>
 	<div class="map-center"><img class="map" ng-src="{{basemap.dena}}" alt="Whoops, there's no dena"/></div>
 	<div class="map-center"><img class="map" ng-src="{{basemap.airports}}" alt="Whoops, there's no airports"/></div>
 </div>
