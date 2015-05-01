@@ -16,8 +16,9 @@ else:
 	sys.exit(1)
 
 paths.setEnv(env)
+paths.clearTemp()
 
-redoExistingOutput = False
+redoExistingOutput = True
 
 """
 Each distributed function takes in the name of the *output* file it should produce.
@@ -47,6 +48,13 @@ def preprocess(layerName):
 		print "{} already exists, leaving it as is.".format(output)
 		return output
 
+	for tempras in ["projected", "clipped"]:
+		try:
+			arcpy.Raster(tempras)
+			print "Deleting temporary: {}".format(tempras)
+			arcpy.Delete_management(tempras)
+		except RuntimeError:
+			pass  # tempfile doesn't exist, we're good
 
 	print "Projecting and resampling..."
 	arcpy.ProjectRaster_management(source, "projected", paths.alaskaAlbers, cell_size= 500)
@@ -451,15 +459,15 @@ def changeExtTo(newExt):
 	
 if __name__ == '__main__':
 	conductor = distribute.Conductor()
-	redoExistingOutput = False
+	redoExistingOutput = True
 
-	"""
+	
 	#############
 	## Preprocess
 	resolveOutputs(conductor, paths.resistances, paths.preprocessed,
 				   filterMasked(lambda inNames: inNames),
 				   preprocess)
-
+	"""
 	###############################
 	## Make all weight combinations
 	resolveOutputs(conductor, paths.preprocessed, paths.costRasters,
@@ -478,7 +486,7 @@ if __name__ == '__main__':
 	resolveOutputs(conductor, paths.costRasters, paths.circuitscape,
 				   lambda inNames: inNames,
 				   runCircuitscape)
-	"""
+	
 	redoExistingOutput = True
 	#########
 	## Render
@@ -493,3 +501,4 @@ if __name__ == '__main__':
 				   render,
 				   subfolder= subfolder,
 				   circuitscape= False)
+	"""

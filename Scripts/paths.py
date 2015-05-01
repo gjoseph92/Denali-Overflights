@@ -33,7 +33,7 @@ workspace = join(projRoot, "Workspace.gdb")
 toolbox = join(projRoot, "DenaliJobs.tbx")
 costRasters = join(projRoot, "Results", "CostRasters")
 LCPs = join(projRoot, "Results", "LCPs")
-preprocessed = join(projRoot, "Results", "Preprocessed.gdb")
+preprocessed = join(projRoot, "Results", "Preprocessed")
 images = join(projRoot, "Results", "Images")
 circuitscape = join(projRoot, "Results", "Circuitscape")
 
@@ -81,3 +81,8 @@ def dropcache(*paths):
 				os.remove(path)
 			except IOError as e:
 				print "Couldn't remove {}".format(path)
+
+def clearTemp():
+	print "Clearing {}".format(temp)
+	shutil.rmtree(temp)
+	os.makedirs(temp)
