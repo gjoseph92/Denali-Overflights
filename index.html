@@ -89,7 +89,7 @@
 				'travel_resis'   : 1
 			}
 
-			$scope.imgpath = window.location.host == "" ? "http://localhost:8000/" : "https://s3.amazonaws.com/denali-overflights/Results/Images/primary/";
+			$scope.imgpath = window.location.host == "" ? "http://localhost:8000/" : "https://s3.amazonaws.com/denali-overflights/Results/Images/primary_colors_fixed/";
 
 			$scope.basemap = {
 				'hillshade': "Viewer/layers/hillshade.png",
@@ -231,8 +231,8 @@
 
 		#scenarios {
 			flex: 2;
-			overflow-x: hidden;
-			overflow-y: scroll;
+			overflow: hidden;
+
 		}
 		#info {
 			flex: 1;
