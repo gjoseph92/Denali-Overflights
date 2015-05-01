@@ -286,10 +286,6 @@ def render(outputWeightCodePNG, outHeight= 2200, subfolder= None, circuitscape= 
 		lcpLayer.visible = False
 		costOutput = paths.join(paths.images, subfolder, "cost", outputWeightCodePNG)
 		print "Writing cost to {}".format(costOutput)
-		# arcpy.mapping.ExportToPNG(mxd, costOutput, df,
-		# 				  df_export_width= outWidth, df_export_height= outHeight,
-		# 				  background_color= "255, 255, 255", transparent_color= "255, 255, 255")
-
 		arcpy.mapping.ExportToPNG(mxd, costOutput, "PAGE_LAYOUT",
 								  resolution= 400,
 								  background_color= "255, 255, 255")
@@ -298,10 +294,6 @@ def render(outputWeightCodePNG, outHeight= 2200, subfolder= None, circuitscape= 
 		lcpLayer.visible = True
 		lcpOutput = paths.join(paths.images, subfolder, "LCP", outputWeightCodePNG)
 		print "Writing lcp to {}".format(lcpOutput)
-		# arcpy.mapping.ExportToPNG(mxd, lcpOutput, df,
-		# 				  df_export_width= outWidth, df_export_height= outHeight,
-		# 				  background_color= "255, 255, 255", transparent_color= "255, 255, 255")
-
 		arcpy.mapping.ExportToPNG(mxd, lcpOutput, "PAGE_LAYOUT",
 								  resolution= 400,
 								  background_color= "255, 255, 255", transparent_color= "255, 255, 255")
@@ -328,7 +320,7 @@ def render(outputWeightCodePNG, outHeight= 2200, subfolder= None, circuitscape= 
 	# 						  background_color= "255, 255, 255", transparent_color= "255, 255, 255")
 	arcpy.mapping.ExportToPNG(mxd, output, "PAGE_LAYOUT",
 							  resolution= 400,
-							  background_color= "255, 255, 255", transparent_color= "255, 255, 255")
+							  background_color= "255, 255, 255")
 
 	del mxd
 
@@ -468,7 +460,6 @@ if __name__ == '__main__':
 				   filterMasked(lambda inNames: inNames),
 				   preprocess)
 
-	# redoExistingOutput = True
 	###############################
 	## Make all weight combinations
 	resolveOutputs(conductor, paths.preprocessed, paths.costRasters,
@@ -481,42 +472,24 @@ if __name__ == '__main__':
 	resolveOutputs(conductor, paths.costRasters, paths.LCPs,
 				   changeExtTo(".shp"),
 				   LCP)
-	"""
+	
 	###############
 	## Circuitscape
 	resolveOutputs(conductor, paths.costRasters, paths.circuitscape,
 				   lambda inNames: inNames,
 				   runCircuitscape)
-	
+	"""
+	redoExistingOutput = True
 	#########
 	## Render
-	# subfolder = "primary"
-	# if not os.path.exists(paths.joinNative(paths.images, subfolder, "cost")):
-	# 	os.makedirs(paths.join(paths.images, subfolder, "cost"))
+	subfolder = "primary_colors_fixed"
+	if not os.path.exists(paths.joinNative(paths.images, subfolder, "cost")):
+		os.makedirs(paths.join(paths.images, subfolder, "cost"))
 
-	# if not os.path.exists(paths.joinNative(paths.images, subfolder, "LCP")):
-	# 	os.makedirs(paths.join(paths.images, subfolder, "LCP"))
-	# resolveOutputs(conductor, paths.LCPs, paths.join(paths.images, subfolder),
-	# 			   changeExtTo(".png"),
-	# 			   render,
-	# 			   subfolder= subfolder,
-	# 			   circuitscape= False)
-
-	# paths = conductor( LCP(paths.join(paths.preprocessed, layer), layer.replace("_resis", "")) for layer in layers )
-
-	# print paths
-
-
-	# preprocessed = [ preprocess(layer) for layer, weight in layers ]
-
-	# preprocess("hiker_resis")
-	# preprocess("bestp_resis")
-	# preprocess("jets_resis")
-
-	# weightedCostRaster(layers)
-
-	# env.workspace = paths.costRasters
-	# LCPs = [ LCP(costRaster) for costRaster in arcpy.ListRasters() ]
-	
-	# env.workspace = paths.costRasters
-	# curmaps = [ runCircuitscape(costRaster) for costRaster in arcpy.ListRasters() ]
+	if not os.path.exists(paths.joinNative(paths.images, subfolder, "LCP")):
+		os.makedirs(paths.join(paths.images, subfolder, "LCP"))
+	resolveOutputs(conductor, paths.LCPs, paths.join(paths.images, subfolder),
+				   changeExtTo(".png"),
+				   render,
+				   subfolder= subfolder,
+				   circuitscape= False)
