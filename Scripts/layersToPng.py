@@ -12,7 +12,7 @@ if len(sys.argv) == 1:
 else:
     outdir = sys.argv[1]
 
-mapdoc = paths.joinNative(paths.projRoot, "templateNoCscape.mxd")
+mapdoc = paths.joinNative(paths.projRoot, "templateNoCscape2.mxd")
 print mapdoc
 mxd = arcpy.mapping.MapDocument(mapdoc)
 df = arcpy.mapping.ListDataFrames(mxd, "")[0]
