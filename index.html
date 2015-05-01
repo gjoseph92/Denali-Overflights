@@ -96,7 +96,8 @@
 				'airports': "Viewer/layers/airports.png",
 				'dena': "Viewer/layers/DENA_outline.png",
 				'roads': "Viewer/layers/Roads.png",
-				'lcp': "Viewer/layers/LCP.png"
+				'lcp': "Viewer/layers/LCP.png",
+				'current': "Viewer/layers/Current_routes.png"
 			};
 
 			$scope.about = "Created by Gabe Joseph and the Denali National Park Physical Sciences Divsion.";
@@ -349,11 +350,12 @@
 	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + soloWeightCode() + '.png'}}" ng-if="showCostRaster && i.soloCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
 
 	<div class="map-center"><img class="map" ng-src="{{basemap.roads}}" alt="Whoops, there's no roads"/></div>
+	<div class="map-center"><img class="map" ng-src="{{basemap.dena}}" alt="Whoops, there's no dena"/></div>
+	<div class="map-center"><img class="map" ng-src="{{basemap.current}}" alt="Whoops, there's no current routes"/></div>
 	
 	<div class="map-center"><img class="map" id="map" ng-src="{{imgpath + 'LCP/' + weightCode() + '.png'}}" alt="Whoops, there's no map rendered for that combination of weights"/></div>
 	<!-- <div class="map-center"><img class="map" id="map" ng-src="{{basemap.lcp}}" alt="Whoops, there's no map rendered for that combination of weights"/></div> -->
 	
-	<div class="map-center"><img class="map" ng-src="{{basemap.dena}}" alt="Whoops, there's no dena"/></div>
 	<div class="map-center"><img class="map" ng-src="{{basemap.airports}}" alt="Whoops, there's no airports"/></div>
 </div>
 
