@@ -8,7 +8,7 @@ Exports each visible layer in the map file to PNG
 """
 
 if len(sys.argv) == 1:
-    outdir = paths.joinNative(paths.images, "Layers")
+    outdir = paths.joinNative(paths.projRoot, "Viewer", "layers")
 else:
     outdir = sys.argv[1]
 
