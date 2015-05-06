@@ -37,6 +37,8 @@ preprocessed = join(projRoot, "Results", "Preprocessed")
 images = join(projRoot, "Results", "Images")
 circuitscape = join(projRoot, "Results", "Circuitscape")
 
+poster = join(projRoot, "Poster")
+
 temp = "C:\\temp"
 
 try:
