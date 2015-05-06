@@ -14,59 +14,59 @@
 			$scope.layerInfo = {
 				'agl_resis': {
 					title: "Distance from ground",
-					info: "Distance from ground surface to elevation of 8000 feet. Following topographic lows is one of the best ways to reduce noise impact. White == highest cost."
+					info: "Distance from ground surface to elevation of 8000 feet. Following topographic lows is one of the best ways to reduce noise impact. White = highest cost."
 				},
 				'bcmp_resis': {
 					title: "BCMP zones",
-					info: "Sets standards for the amount and intensity of noise permissible in different areas of the park. Contains four zones: Low, Med, High, V. High. White == highest cost."
+					info: "Sets standards for the amount and intensity of noise permissible in different areas of the park. Contains four zones: Low, Med, High, V. High. White = highest cost."
 				},
 				'bestp_resis': {
 					title: "FACA best practices",
-					info: "Areas the Overflights Advisory Council recommended avoiding, 2007-2012. Most notable is the 'purple polygon' along spine of the Alaska range. White == highest cost."
+					info: "Areas the Overflights Advisory Council recommended avoiding, 2007-2012. Most notable is the 'purple polygon' along spine of the Alaska range. White = highest cost."
 				},
 				'buffer_resis': {
 					title: "Avoid DENA overflight",
-					info: "Entirely avoid flying inside the boundaries of the park. White == highest cost."
+					info: "Entirely avoid flying inside the boundaries of the park. White = highest cost."
 				},
 				'camp_resis': {
 					title: "Campgrounds",
-					info: "Avoid flying near campgrounds to preserve quietude. Recognized by the FACA group as sound-sensitive areas, but not included on their map. White == highest cost."
+					info: "Avoid flying near campgrounds to preserve quietude. Recognized by the FACA group as sound-sensitive areas, but not included on their map. White = highest cost."
 				},
 				'hiker_resis': {
 					title: "Hiker density",
-					info: "Avoid flying over areas of high day-hiker and backpacker density. White == highest cost."
+					info: "Avoid flying over areas of high day-hiker and backpacker density. White = highest cost."
 				},
 				'jets_resis': {
 					title: "Avoid low jet traffic",
-					info: "Preserve existing quietude by avoiding areas with low high-altitude jet traffic. White == highest cost."
+					info: "Preserve existing quietude by avoiding areas with low high-altitude jet traffic. White = highest cost."
 				},
 				'l50_resis': {
 					title: "Ambient noise level",
-					info: "Prefer flying over naturally louder areas, like streams. Based on modeling of median sound pressure level across the entire state. White == highest cost."
+					info: "Prefer flying over naturally louder areas, like streams. Based on modeling of median sound pressure level across the entire state. White = highest cost."
 				},
 				'nfi_resis': {
 					title: "Noise-free interval",
-					info: "Areas with the lowest 24-hour noise-free intervals should not be sacrificed. White == highest cost."
+					info: "Areas with the lowest 24-hour noise-free intervals should not be sacrificed. White = highest cost."
 				},
 				'riv_resis': {
 					title: "Rivers",
-					info: "Prefer to fly nearer to rivers, as they mask human noise. White == highest cost."
+					info: "Prefer to fly nearer to rivers, as they mask human noise. White = highest cost."
 				},
 				'roads_resis': {
 					title: "Road",
-					info: "Prefer flying over the road. This was an idea discussed and vetted by the FACA group. White == highest cost."
+					info: "Prefer flying over the road. This was an idea discussed and vetted by the FACA group. White = highest cost."
 				},
 				'sens_resis': {
 					title: "Sound-sensitive areas",
-					info: "FACA group \"sound sensitive areas\". White == highest cost."
+					info: "FACA group \"sound sensitive areas\". White = highest cost."
 				},
 				'straight_resis': {
 					title: "Flight directness",
-					info: "Prefer straighter lines from each airport to the Denali massif. White == highest cost."
+					info: "Prefer straighter lines from each airport to the Denali massif. White = highest cost."
 				},
 				'travel_resis': {
 					title: "Hiking distance",
-					info: "Perfer flying over areas that are easier to hike to. The desire for solitude is often correlated with the energy expended to find it. White == highest cost."
+					info: "Perfer flying over areas that are easier to hike to. The desire for solitude is often correlated with the energy expended to find it. White = highest cost."
 				}
 			};
 
@@ -341,6 +341,9 @@
 		<div>
 			<input type="checkbox" id="showCost" ng-model="showCostRaster"> <label for="showCost">Show cost raster</label>
 		</div>
+		<div>
+			<input type="checkbox" id="showCurrentRoutes" ng-model="showCurrentRoutes"> <label for="showCurrentRoutes">Show sample of current routes</label>
+		</div>
 	</div>
 </div>
 
@@ -351,7 +354,7 @@
 
 	<div class="map-center"><img class="map" ng-src="{{basemap.roads}}" alt="Whoops, there's no roads"/></div>
 	<div class="map-center"><img class="map" ng-src="{{basemap.dena}}" alt="Whoops, there's no dena"/></div>
-	<div class="map-center"><img class="map" ng-src="{{basemap.current}}" alt="Whoops, there's no current routes"/></div>
+	<div class="map-center"><img class="map" ng-src="{{basemap.current}}" alt="Whoops, there's no current routes"/ ng-show="showCurrentRoutes"></div>
 	
 	<div class="map-center"><img class="map" id="map" ng-src="{{imgpath + 'LCP/' + weightCode() + '.png'}}" alt="Whoops, there's no map rendered for that combination of weights"/></div>
 	<!-- <div class="map-center"><img class="map" id="map" ng-src="{{basemap.lcp}}" alt="Whoops, there's no map rendered for that combination of weights"/></div> -->
