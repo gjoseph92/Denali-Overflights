@@ -14,15 +14,15 @@
 			$scope.layerInfo = {
 				'agl_resis': {
 					title: "Distance from ground",
-					info: "Distance from ground surface to elevation of 8000 feet. Reduced AGL is one of the most pronounced factors in increasing overflight intensity, animal, and visitor irritation."
+					info: "Distance from ground surface to elevation of 8000 feet. Following topographic lows is one of the best ways to reduce noise impact."
 				},
 				'bcmp_resis': {
 					title: "BCMP zones",
-					info: "Backcountry Management Plan zones - Low, Med, High, V. High"
+					info: "Sets standards for the amount and intensity of noise permissible in different areas of the park. Contains four zones: Low, Med, High, V. High"
 				},
 				'bestp_resis': {
 					title: "FACA best practices",
-					info: "FACA group layer containing aviation best practices 2007 - 2012, esp. 'purple polygon'."
+					info: "Areas the Overflights Advisory Council recommended avoiding, 2007-2012. Most notable is the 'purple polygon' along spine of the Alaska range."
 				},
 				'buffer_resis': {
 					title: "Avoid DENA overflight",
@@ -211,6 +211,7 @@
 			/*margin: 2px;*/
 			padding: 15px;
 			box-shadow: 0 0px 5px rgba(0,0,0,0.9);
+			overflow-y: scroll;
 		}
 
 		#content {
@@ -339,19 +340,20 @@
 	</div>
 	<div class="pinbottom">
 		<div>
-			<input type="checkbox" id="showCost" ng-model="showCostRaster"> <label for="showCost">Show cost raster</label>
+			<div><input type="checkbox" id="showCost" ng-model="showCostRaster"> <label for="showCost">Show cost raster</label></div>
+			<div><input type="checkbox" id="showCurrentRoutes" ng-model="showCurrentRoutes"> <label for="showCurrentRoutes">Show sampling of current routes</label></div>
 		</div>
 	</div>
 </div>
 
 <div id="content">
 	<div class="map-center"><img class="map" ng-src="{{basemap.hillshade}}" alt="Whoops, there's no hillshade"/></div>
-	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + weightCode() + '.png'}}" ng-if="showCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
+	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + weightCode() + '.png'}}" ng-show="showCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
 	<div class="map-center"><img class="map" ng-src="{{imgpath + 'cost/' + soloWeightCode() + '.png'}}" ng-if="showCostRaster && i.soloCostRaster" alt="Whoops, there's no cost raster rendered for that combination of weights"/></div>
 
 	<div class="map-center"><img class="map" ng-src="{{basemap.roads}}" alt="Whoops, there's no roads"/></div>
 	<div class="map-center"><img class="map" ng-src="{{basemap.dena}}" alt="Whoops, there's no dena"/></div>
-	<div class="map-center"><img class="map" ng-src="{{basemap.current}}" alt="Whoops, there's no current routes"/></div>
+	<div class="map-center"><img class="map" ng-src="{{basemap.current}}" alt="Whoops, there's no current routes"/ ng-show="showCurrentRoutes"></div>
 	
 	<div class="map-center"><img class="map" id="map" ng-src="{{imgpath + 'LCP/' + weightCode() + '.png'}}" alt="Whoops, there's no map rendered for that combination of weights"/></div>
 	<!-- <div class="map-center"><img class="map" id="map" ng-src="{{basemap.lcp}}" alt="Whoops, there's no map rendered for that combination of weights"/></div> -->
